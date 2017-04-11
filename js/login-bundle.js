@@ -60,7 +60,7 @@ var LoginComp = function (_React$Component) {
     }, {
         key: 'doLogin',
         value: function doLogin() {
-            alert(123);
+            console.log(this.loginName.value);
             window.location = 'main.html';
             return false;
         }
