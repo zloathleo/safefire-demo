@@ -29467,7 +29467,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var styles = {
     logo: {
-        backgroundImage: 'url("/assets/image/powermax-200.png")',
+        backgroundImage: 'url("../assets/image/powermax-200.png")',
         backgroundRepeat: 'no-repeat',
         height: '41px',
         backgroundSize: '80%',
@@ -29598,17 +29598,12 @@ var lineChartData = {
 };
 
 var config = {
-    radar: {
+    tempChart: {
         count: 60,
         fillColor: 'rgba(244,67,54,' + 0.017 + ')', //历史填充
         lineColor: "rgba(244,67,54,0.1)", //历史线色
         newFillColor: _colors.transparent, //当前填充
         newLineColor: 'rgba(255,69,105,0.8)' }
-};
-
-var radarChartData = {
-    labels: ["No1", "No2", "No3", "No4"],
-    datasets: []
 };
 
 var MyIndexContent = function (_React$Component) {
@@ -29620,7 +29615,11 @@ var MyIndexContent = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (MyIndexContent.__proto__ || Object.getPrototypeOf(MyIndexContent)).call(this, props));
 
         _this.refreshData = _this.refreshData.bind(_this);
-        _this.radarChart = undefined;
+        _this.tempRadarChartDom = undefined;
+        _this.tempRadarChart = undefined;
+
+        _this.tempLineChartDom = undefined;
+        _this.tempLineChart = undefined;
         return _this;
     }
 
@@ -29640,28 +29639,63 @@ var MyIndexContent = function (_React$Component) {
                 options: lineOptions
             });
 
-            var radarDatasets = radarChartData.datasets;
-            _DataRandom2.default.randomInitRadarDatasets(radarDatasets, config.radar.count, config.radar.lineColor, config.radar.fillColor);
-
-            var radarOptions = {
+            ///////////////////////////
+            //////四角
+            /////////////////////////// 
+            var _options = {
+                title: {
+                    display: true,
+                    text: 'temperature in corners',
+                    fontFamily: 'sans-serif',
+                    fontStyle: 'normal',
+                    fontSize: 16
+                },
                 scale: {
                     ticks: {
+                        beginAtZero: false,
                         min: 1100,
                         max: 1500,
-                        stepSize: 50
+                        maxTicksLimit: 1500,
+                        stepSize: 50,
+                        suggestedMax: 1500,
+                        suggestedMin: 1100,
+                        fixedStepSize: 50
                     }
                 },
                 animation: {
                     duration: 800 },
                 legend: {
                     display: false
+                },
+                elements: {
+
+                    point: { radius: 0, borderWidth: 0 },
+                    line: {
+                        tension: 0.2,
+                        borderColor: _colors.transparent
+                    }
                 }
             };
+            var initTempDataSets = _DataRandom2.default.randomInitRadarDatasets(config.tempChart.count, config.tempChart.lineColor, config.tempChart.fillColor);
+            //  temp LineChart 
+            this.tempLineChart = new Chart(this.tempLineChartDom, {
+                type: 'line',
+                data: {
+                    labels: ["No1", "No2", "No3", "No4"],
+                    datasets: initTempDataSets
+                },
+                options: _options
+            });
 
-            this.radarChart = new Chart(this.radarChartDom, {
+            //radar
+            var initTempRadarDataSets = initTempDataSets.slice(0);
+            this.tempRadarChart = new Chart(this.tempRadarChartDom, {
                 type: 'radar',
-                data: radarChartData,
-                options: radarOptions
+                data: {
+                    labels: ["No1", "No2", "No3", "No4"],
+                    datasets: initTempRadarDataSets
+                },
+                options: _options
             });
 
             setInterval(this.refreshData, 1000);
@@ -29669,22 +29703,31 @@ var MyIndexContent = function (_React$Component) {
     }, {
         key: 'refreshData',
         value: function refreshData() {
+            //temp line  
+            var newData = _DataRandom2.default.randomNewRadarData(config.tempChart.newLineColor);
 
-            var radarDatasets = radarChartData.datasets;
-            if (radarDatasets.length > 0) {
-                var dataItem = radarDatasets[0];
-                _DataRandom2.default.updateHistoryRadarData(dataItem, config.radar.lineColor, config.radar.fillColor);
+            var tempLineDatasets = this.tempLineChart.data.datasets;
+            this.refreshTempChart(tempLineDatasets, newData);
+            this.tempLineChart.update();
+
+            var radarDatasets = this.tempRadarChart.data.datasets;
+            this.refreshTempChart(radarDatasets, newData);
+            this.tempRadarChart.update();
+        }
+    }, {
+        key: 'refreshTempChart',
+        value: function refreshTempChart(datasets, newData) {
+            if (datasets.length > 0) {
+                var dataItem = datasets[0];
+                _DataRandom2.default.updateHistoryRadarData(dataItem, config.tempChart.lineColor, config.tempChart.fillColor);
             }
-
             //最前的最后画  
-            if (radarDatasets.length >= config.radar.count) {
-                radarDatasets.pop();
-                _DataRandom2.default.randomAppendNewRadarData(radarDatasets, config.radar.newLineColor, config.radar.newFillColor);
+            if (datasets.length >= config.tempChart.count) {
+                datasets.pop();
+                datasets.unshift(newData);
             } else {
-                _DataRandom2.default.randomAppendNewRadarData(radarDatasets, config.radar.newLineColor, config.radar.newFillColor);
+                datasets.unshift(newData);
             }
-
-            this.radarChart.update();
         }
     }, {
         key: 'render',
@@ -29705,7 +29748,14 @@ var MyIndexContent = function (_React$Component) {
                     _materialUi.Paper,
                     { zDepth: 2, style: styles.paper },
                     _react2.default.createElement('canvas', { ref: function ref(_ref2) {
-                            return _this2.radarChartDom = _ref2;
+                            return _this2.tempLineChartDom = _ref2;
+                        } })
+                ),
+                _react2.default.createElement(
+                    _materialUi.Paper,
+                    { zDepth: 2, style: styles.paper },
+                    _react2.default.createElement('canvas', { ref: function ref(_ref3) {
+                            return _this2.tempRadarChartDom = _ref3;
                         } })
                 ),
                 _react2.default.createElement(
@@ -29867,9 +29917,10 @@ var DataRandom = function () {
 
     _createClass(DataRandom, null, [{
         key: 'randomInitRadarDatasets',
-        value: function randomInitRadarDatasets(radarDatasets, count, newLineColor, fillColor) {
+        value: function randomInitRadarDatasets(count, newLineColor, fillColor) {
+            var datasets = [];
             for (var i = 0; i < count; i++) {
-                radarDatasets.unshift({
+                datasets.unshift({
                     borderWidth: 0.3,
                     pointRadius: 0,
                     backgroundColor: fillColor, //无填充
@@ -29880,6 +29931,7 @@ var DataRandom = function () {
                     data: [_Utils2.default.randomFloatRange(1200, 1400), _Utils2.default.randomFloatRange(1300, 1400), _Utils2.default.randomFloatRange(1300, 1400), _Utils2.default.randomFloatRange(1200, 1400)]
                 });
             }
+            return datasets;
         }
     }, {
         key: 'updateHistoryRadarData',
@@ -29893,9 +29945,10 @@ var DataRandom = function () {
             dataItem.pointBorderColor = _colors.transparent;
         }
     }, {
-        key: 'randomAppendNewRadarData',
-        value: function randomAppendNewRadarData(radarDatasets, newLineColor, fillColor) {
-            radarDatasets.unshift({
+        key: 'randomNewRadarData',
+        value: function randomNewRadarData(newLineColor) {
+            //radarDatasets.unshift(
+            return {
                 borderWidth: 1.2,
                 pointRadius: 2,
                 backgroundColor: _colors.transparent, //无填充
@@ -29903,7 +29956,7 @@ var DataRandom = function () {
                 pointBackgroundColor: newLineColor,
                 pointBorderColor: _colors.white,
                 data: [_Utils2.default.randomFloatRange(1200, 1400), _Utils2.default.randomFloatRange(1300, 1400), _Utils2.default.randomFloatRange(1300, 1400), _Utils2.default.randomFloatRange(1200, 1400)]
-            });
+            };
         }
     }]);
 
