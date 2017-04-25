@@ -32296,7 +32296,7 @@ var Main = function (_React$Component) {
   }, {
     key: 'doLogout',
     value: function doLogout(e) {
-      window.location = '/';
+      window.location = global._currentPath;
       return false;
     }
   }, {
