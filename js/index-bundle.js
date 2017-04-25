@@ -30912,7 +30912,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 //custom
 // alert(__dirname);
-alert( 'resolve:' + Path.resolve('./'));
+alert('resolve:' + _path2.default.resolve('./'));
 
 var IndexRouteConfig = function IndexRouteConfig() {
     return _react2.default.createElement(
