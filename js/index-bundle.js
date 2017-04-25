@@ -30911,7 +30911,7 @@ var _Analyze2 = _interopRequireDefault(_Analyze);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //custom
-console.log(__dirname);
+alert(__dirname);
 
 var IndexRouteConfig = function IndexRouteConfig() {
     return _react2.default.createElement(
