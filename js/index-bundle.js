@@ -32304,12 +32304,10 @@ var Main = function (_React$Component) {
     value: function handleChangeDrawerItem(_key, _nativeEvent) {
       //改变页
       var _routerHistory = this.router.history;
-      // console.log(_routerHistory);
-      // console.log('handleChangeDrawerItem'); 
       if (_key == 'Overview') {
-        _routerHistory.replace('/main/overview');
+        _routerHistory.replace(global._currentPath + 'main/overview');
       } else if (_key == 'Analyze') {
-        _routerHistory.replace('/main/analyze');
+        _routerHistory.replace(global._currentPath + 'main/analyze');
       }
       this.setState({ open: false, title: _key });
     }
