@@ -32157,7 +32157,7 @@ var Login = function (_React$Component) {
                             ),
                             _react2.default.createElement(_reactRouterDom.Link, { ref: function ref(_ref4) {
                                     return _this2.loginLink = _ref4;
-                                }, to: '/main/overview' }),
+                                }, to: "main/overview" }),
                             _react2.default.createElement(
                                 'p',
                                 { className: 'message', onClick: this.toRegister },
@@ -32305,9 +32305,9 @@ var Main = function (_React$Component) {
       //改变页
       var _routerHistory = this.router.history;
       if (_key == 'Overview') {
-        _routerHistory.replace(global._currentPath + 'main/overview');
+        _routerHistory.replace('overview');
       } else if (_key == 'Analyze') {
-        _routerHistory.replace(global._currentPath + 'main/analyze');
+        _routerHistory.replace('analyze');
       }
       this.setState({ open: false, title: _key });
     }
@@ -32404,7 +32404,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 global._currentPath = '/';
 global._currentPath = _url2.default.parse(document.URL).path;
-alert('aaa:' + global._currentPath);
+console.log('_currentPath:' + global._currentPath);
 
 _reactDom2.default.render(_react2.default.createElement(_MyRoutes2.default.IndexRouteConfig, null), document.getElementById('root'));
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(54)))
