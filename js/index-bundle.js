@@ -30920,6 +30920,7 @@ var IndexRouteConfig = function IndexRouteConfig() {
         _react2.default.createElement(
             'div',
             { style: { height: '100%' } },
+            '123',
             _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: __dirname, component: _Login2.default }),
             _react2.default.createElement(_reactRouterDom.Route, { path: __dirname + 'main', component: _Main2.default })
         )
